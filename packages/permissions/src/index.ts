@@ -1,0 +1,2 @@
+// packages/permissions
+export {};

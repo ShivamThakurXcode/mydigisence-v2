@@ -1,0 +1,2 @@
+// services/queue-service
+export {};

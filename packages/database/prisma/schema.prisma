@@ -1,0 +1,475 @@
+// MyDigiSence — Prisma Schema (MongoDB)
+// Run: pnpm --filter @mydigisence/database db:generate
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  business
+  professional
+  explorer
+}
+
+enum WorkspaceType {
+  business
+  professional
+  creator
+  agency
+  enterprise
+}
+
+enum WorkspaceRole {
+  owner
+  admin
+  editor
+  member
+  viewer
+}
+
+enum SubscriptionPlan {
+  free
+  starter
+  pro
+  business
+  enterprise
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  cancelled
+  completed
+  no_show
+}
+
+enum ListingStatus {
+  active
+  draft
+  archived
+  suspended
+}
+
+enum CrmContactStatus {
+  lead
+  prospect
+  active
+  inactive
+  churned
+}
+
+enum NotificationType {
+  booking_confirmed
+  booking_cancelled
+  new_message
+  new_review
+  new_follower
+  payment_received
+  workspace_invite
+  ai_suggestion
+  system
+}
+
+// ─── Users ────────────────────────────────────────────────────────────────────
+
+model User {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  email          String    @unique
+  passwordHash   String
+  firstName      String
+  lastName       String
+  phone          String?
+  emailVerified  Boolean   @default(false)
+  roles          UserRole[]
+  workspaceIds   String[]  @db.ObjectId
+  isActive       Boolean   @default(true)
+  lastLoginAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relations
+  profile        Profile?
+  ownedWorkspaces Workspace[] @relation("WorkspaceOwner")
+  notifications  Notification[]
+  sentMessages   Message[]    @relation("MessageAuthor")
+  bookings       Booking[]    @relation("BookingCustomer")
+  reviews        Review[]     @relation("ReviewAuthor")
+
+  @@map("users")
+}
+
+// ─── Profiles ─────────────────────────────────────────────────────────────────
+
+model Profile {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @unique @db.ObjectId
+  username    String   @unique
+  displayName String
+  bio         String?
+  avatar      String?
+  banner      String?
+  location    String?
+  website     String?
+  sections    Json[]   @default([])
+  settings    Json     @default("{}")
+  isPublic    Boolean  @default(true)
+  viewCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+// ─── Workspaces ───────────────────────────────────────────────────────────────
+
+model Workspace {
+  id           String           @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId      String           @db.ObjectId
+  name         String
+  slug         String           @unique
+  type         WorkspaceType
+  description  String?
+  logo         String?
+  banner       String?
+  website      String?
+  phone        String?
+  email        String?
+  members      Json[]           @default([])
+  modules      Json             @default("{}")
+  branding     Json             @default("{}")
+  subscription SubscriptionPlan @default(free)
+  customDomain String?          @unique
+  isActive     Boolean          @default(true)
+  isVerified   Boolean          @default(false)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  // Relations
+  owner              User                @relation("WorkspaceOwner", fields: [ownerId], references: [id])
+  businessProfile    BusinessProfile?
+  professionalProfile ProfessionalProfile?
+  services           Service[]
+  products           Product[]
+  bookings           Booking[]           @relation("WorkspaceBooking")
+  reviews            Review[]            @relation("WorkspaceReview")
+  conversations      Conversation[]
+  crmContacts        CrmContact[]
+  automations        Automation[]
+  campaigns          Campaign[]
+
+  @@map("workspaces")
+}
+
+// ─── Business Profiles ────────────────────────────────────────────────────────
+
+model BusinessProfile {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  workspaceId   String   @unique @db.ObjectId
+  industry      String?
+  category      String?
+  subcategory   String?
+  address       Json?
+  location      Json?
+  businessHours Json[]   @default([])
+  founded       String?
+  size          String?
+  socialLinks   Json     @default("{}")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  workspace     Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@map("business_profiles")
+}
+
+// ─── Professional Profiles ────────────────────────────────────────────────────
+
+model ProfessionalProfile {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  workspaceId    String   @unique @db.ObjectId
+  title          String?
+  skills         String[] @default([])
+  experience     Json[]   @default([])
+  education      Json[]   @default([])
+  portfolio      Json[]   @default([])
+  certifications Json[]   @default([])
+  languages      String[] @default([])
+  hourlyRate     Float?
+  currency       String   @default("USD")
+  availability   Json     @default("{}")
+  socialLinks    Json     @default("{}")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  workspace      Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@map("professional_profiles")
+}
+
+// ─── Services / Listings ──────────────────────────────────────────────────────
+
+model Service {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  workspaceId  String        @db.ObjectId
+  title        String
+  description  String
+  price        Float
+  currency     String        @default("USD")
+  category     String
+  subcategory  String?
+  tags         String[]      @default([])
+  images       String[]      @default([])
+  deliveryTime Int?
+  availability Json          @default("{}")
+  status       ListingStatus @default(draft)
+  viewCount    Int           @default(0)
+  bookingCount Int           @default(0)
+  rating       Float         @default(0)
+  reviewCount  Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relations
+  workspace    Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  bookings     Booking[]     @relation("ServiceBooking")
+  reviews      Review[]      @relation("ServiceReview")
+
+  @@map("services")
+}
+
+// ─── Products ─────────────────────────────────────────────────────────────────
+
+model Product {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  workspaceId  String        @db.ObjectId
+  title        String
+  description  String
+  price        Float
+  currency     String        @default("USD")
+  category     String
+  tags         String[]      @default([])
+  images       String[]      @default([])
+  sku          String?
+  inventory    Int?
+  isDigital    Boolean       @default(false)
+  downloadUrl  String?
+  status       ListingStatus @default(draft)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relations
+  workspace    Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@map("products")
+}
+
+// ─── Bookings ─────────────────────────────────────────────────────────────────
+
+model Booking {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  serviceId   String        @db.ObjectId
+  customerId  String        @db.ObjectId
+  workspaceId String        @db.ObjectId
+  dateTime    DateTime
+  duration    Int           @default(60)
+  status      BookingStatus @default(pending)
+  paymentId   String?
+  paymentStatus String?
+  amount      Float?
+  currency    String        @default("USD")
+  notes       String?
+  metadata    Json          @default("{}")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  service     Service       @relation("ServiceBooking", fields: [serviceId], references: [id])
+  customer    User          @relation("BookingCustomer", fields: [customerId], references: [id])
+  workspace   Workspace     @relation("WorkspaceBooking", fields: [workspaceId], references: [id])
+
+  @@map("bookings")
+}
+
+// ─── Reviews ──────────────────────────────────────────────────────────────────
+
+model Review {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  rating          Int
+  comment         String
+  authorId        String   @db.ObjectId
+  workspaceId     String   @db.ObjectId
+  serviceId       String?  @db.ObjectId
+  verifiedPurchase Boolean @default(false)
+  isPublic        Boolean  @default(true)
+  reply           String?
+  repliedAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  author          User     @relation("ReviewAuthor", fields: [authorId], references: [id])
+  workspace       Workspace @relation("WorkspaceReview", fields: [workspaceId], references: [id])
+  service         Service?  @relation("ServiceReview", fields: [serviceId], references: [id])
+
+  @@map("reviews")
+}
+
+// ─── Conversations ────────────────────────────────────────────────────────────
+
+model Conversation {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  participants  String[]  @db.ObjectId
+  workspaceId   String?   @db.ObjectId
+  type          String    @default("direct")
+  subject       String?
+  lastMessageAt DateTime?
+  metadata      Json      @default("{}")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  workspace     Workspace? @relation(fields: [workspaceId], references: [id])
+  messages      Message[]
+
+  @@map("conversations")
+}
+
+// ─── Messages ─────────────────────────────────────────────────────────────────
+
+model Message {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  conversationId String       @db.ObjectId
+  authorId       String       @db.ObjectId
+  content        String
+  attachments    Json[]       @default([])
+  readBy         String[]     @db.ObjectId
+  isDeleted      Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Relations
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  author         User         @relation("MessageAuthor", fields: [authorId], references: [id])
+
+  @@map("messages")
+}
+
+// ─── Notifications ────────────────────────────────────────────────────────────
+
+model Notification {
+  id        String           @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String           @db.ObjectId
+  type      NotificationType
+  title     String
+  content   String
+  actionUrl String?
+  data      Json             @default("{}")
+  read      Boolean          @default(false)
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  // Relations
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+// ─── CRM Contacts ─────────────────────────────────────────────────────────────
+
+model CrmContact {
+  id                   String           @id @default(auto()) @map("_id") @db.ObjectId
+  workspaceId          String           @db.ObjectId
+  name                 String
+  email                String?
+  phone                String?
+  company              String?
+  status               CrmContactStatus @default(lead)
+  stage                String?
+  dealValue            Float?
+  source               String?
+  tags                 String[]         @default([])
+  notes                Json[]           @default([])
+  communicationHistory Json[]           @default([])
+  customFields         Json             @default("{}")
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  // Relations
+  workspace            Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@map("crm_contacts")
+}
+
+// ─── Automations ──────────────────────────────────────────────────────────────
+
+model Automation {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  workspaceId String   @db.ObjectId
+  name        String
+  description String?
+  trigger     Json
+  conditions  Json[]   @default([])
+  actions     Json[]
+  enabled     Boolean  @default(true)
+  runCount    Int      @default(0)
+  lastRunAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@map("automations")
+}
+
+// ─── Campaigns ────────────────────────────────────────────────────────────────
+
+model Campaign {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  workspaceId String   @db.ObjectId
+  name        String
+  type        String   @default("email")
+  subject     String?
+  content     Json
+  recipients  Json     @default("{}")
+  status      String   @default("draft")
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  stats       Json     @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@map("campaigns")
+}
+
+// ─── Analytics Events ─────────────────────────────────────────────────────────
+
+model AnalyticsEvent {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  eventType   String
+  data        Json     @default("{}")
+  userId      String?  @db.ObjectId
+  workspaceId String?  @db.ObjectId
+  sessionId   String?
+  ip          String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@map("analytics_events")
+}

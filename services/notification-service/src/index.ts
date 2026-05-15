@@ -1,0 +1,2 @@
+// services/notification-service
+export {};

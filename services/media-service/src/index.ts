@@ -1,0 +1,2 @@
+// services/media-service
+export {};

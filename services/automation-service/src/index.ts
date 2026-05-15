@@ -1,0 +1,2 @@
+// services/automation-service
+export {};
