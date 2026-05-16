@@ -4,6 +4,8 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
+    "start:all": "powershell -ExecutionPolicy Bypass -File ./scripts/start-all.ps1",
+    "start:all:concurrent": "concurrently \"pnpm --filter ./apps/web-platform run dev\" \"pnpm --filter ./apps/marketing-site run dev\" \"pnpm --filter ./apps/admin-panel run dev\"",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
@@ -19,17 +21,20 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.0",
     "@types/node": "^22.0.0",
+    "autoprefixer": "^10.4.14",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
     "eslint": "^9.0.0",
     "husky": "^9.0.0",
     "lint-staged": "^15.0.0",
+    "postcss": "^8.4.27",
     "prettier": "^3.3.0",
     "rimraf": "^6.0.0",
+    "tsup": "^8.5.1",
     "turbo": "^2.3.0",
-    "typescript": "^5.6.0",
-    "postcss": "^8.4.27",
-    "autoprefixer": "^10.4.14"
-    ,"@tailwindcss/postcss": "^4.3.0"
+    "typescript": "^5.6.0"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [

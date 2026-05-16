@@ -1,5 +1,7 @@
 {
   "files.exclude": {
     "node_modules": true
-  }
+  },
+  "css.customData": [],
+  "css.lint.unknownAtRules": "ignore"
 }

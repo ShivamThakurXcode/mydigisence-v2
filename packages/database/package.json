@@ -12,8 +12,8 @@
     }
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsup src/index.ts --format esm,cjs --dts --out-dir dist",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --out-dir dist --watch",
     "lint": "eslint src",
     "type-check": "tsc --noEmit",
     "clean": "rimraf dist",
