@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { DashboardUser, DashboardTopBarUser } from './dashboard-user.js'
+import { DashboardUser, DashboardTopBarUser } from './dashboard-user'
 
 export const metadata: Metadata = {
   title: { template: '%s | Dashboard — MyDigiSence', default: 'Dashboard | MyDigiSence' },

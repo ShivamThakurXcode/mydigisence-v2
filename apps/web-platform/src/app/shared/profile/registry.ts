@@ -1,10 +1,10 @@
 import type { ComponentType } from 'react'
-import { HeroSection } from './sections/hero.section.js'
-import { AboutSection } from './sections/about.section.js'
-import { ServicesSection } from './sections/services.section.js'
-import { SkillsSection } from './sections/skills.section.js'
-import { ReviewsSection } from './sections/reviews.section.js'
-import { ContactSection } from './sections/contact.section.js'
+import { HeroSection } from './sections/hero.section'
+import { AboutSection } from './sections/about.section'
+import { ServicesSection } from './sections/services.section'
+import { SkillsSection } from './sections/skills.section'
+import { ReviewsSection } from './sections/reviews.section'
+import { ContactSection } from './sections/contact.section'
 
 export type SectionComponent = ComponentType<{ config?: Record<string, unknown>; profile?: unknown }>
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { getSectionComponent } from './registry.js'
+import { getSectionComponent } from './registry'
 
 interface SectionConfig {
   type: string
