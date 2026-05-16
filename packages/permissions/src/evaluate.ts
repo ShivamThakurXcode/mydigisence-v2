@@ -1,5 +1,5 @@
-import { PERMISSION_MATRIX } from './matrix.js'
-import type { Action, WorkspaceRole } from './matrix.js'
+import { PERMISSION_MATRIX } from './matrix'
+import type { Action, WorkspaceRole } from './matrix'
 
 export interface WorkspaceMember {
   userId: string

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { slugSchema } from './common.schemas.js'
+import { slugSchema } from './common.schemas'
 
 export const updateUserSchema = z.object({
   firstName: z.string().min(1).max(50).trim().optional(),

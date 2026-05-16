@@ -1,3 +1,3 @@
-export * from './jwt.js'
-export * from './password.js'
-export * from './types.js'
+export * from './jwt'
+export * from './password'
+export * from './types'

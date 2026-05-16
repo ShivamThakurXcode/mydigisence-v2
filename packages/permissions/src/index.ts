@@ -1,2 +1,2 @@
-export * from './matrix.js'
-export * from './evaluate.js'
+export * from './matrix'
+export * from './evaluate'

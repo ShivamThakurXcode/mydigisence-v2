@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { WORKSPACE_TYPES, WORKSPACE_ROLES } from '@mydigisence/constants'
-import { slugSchema } from './common.schemas.js'
+import { slugSchema } from './common.schemas'
 
 export const createWorkspaceSchema = z.object({
   name: z.string().min(2).max(100).trim(),

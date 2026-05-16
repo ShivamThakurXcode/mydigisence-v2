@@ -1,10 +1,10 @@
-export { useUserStore } from './user.store.js'
-export type { AuthUser } from './user.store.js'
+export { useUserStore } from './user.store'
+export type { AuthUser } from './user.store'
 
-export { useWorkspaceStore } from './workspace.store.js'
-export type { WorkspaceData } from './workspace.store.js'
+export { useWorkspaceStore } from './workspace.store'
+export type { WorkspaceData } from './workspace.store'
 
-export { useProfileStore } from './profile.store.js'
-export type { ProfileData, SectionConfig } from './profile.store.js'
+export { useProfileStore } from './profile.store'
+export type { ProfileData, SectionConfig } from './profile.store'
 
-export { useUIStore } from './ui.store.js'
+export { useUIStore } from './ui.store'

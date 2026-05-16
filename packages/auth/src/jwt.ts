@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { TOKEN_TTL } from '@mydigisence/constants'
-import type { JwtPayload, RefreshTokenPayload, EmailTokenPayload, TokenPair } from './types.js'
+import type { JwtPayload, RefreshTokenPayload, EmailTokenPayload, TokenPair } from './types'
 
 function getSecret(): string {
   const secret = process.env['JWT_SECRET']
