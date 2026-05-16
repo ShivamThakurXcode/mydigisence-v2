@@ -1,0 +1,56 @@
+{
+  "profiles": {
+    "settings": { "number_of_shards": 1, "number_of_replicas": 0 },
+    "mappings": {
+      "properties": {
+        "userId":      { "type": "keyword" },
+        "username":    { "type": "keyword" },
+        "displayName": { "type": "text", "analyzer": "standard", "fields": { "keyword": { "type": "keyword" } } },
+        "bio":         { "type": "text", "analyzer": "standard" },
+        "location":    { "type": "keyword" },
+        "website":     { "type": "keyword" },
+        "isPublic":    { "type": "boolean" },
+        "viewCount":   { "type": "integer" },
+        "createdAt":   { "type": "date" },
+        "updatedAt":   { "type": "date" }
+      }
+    }
+  },
+  "services": {
+    "settings": { "number_of_shards": 1, "number_of_replicas": 0 },
+    "mappings": {
+      "properties": {
+        "workspaceId": { "type": "keyword" },
+        "title":       { "type": "text", "analyzer": "standard", "fields": { "keyword": { "type": "keyword" } } },
+        "description": { "type": "text", "analyzer": "standard" },
+        "category":    { "type": "keyword" },
+        "subcategory": { "type": "keyword" },
+        "tags":        { "type": "keyword" },
+        "price":       { "type": "float" },
+        "currency":    { "type": "keyword" },
+        "status":      { "type": "keyword" },
+        "rating":      { "type": "float" },
+        "reviewCount": { "type": "integer" },
+        "bookingCount":{ "type": "integer" },
+        "viewCount":   { "type": "integer" },
+        "createdAt":   { "type": "date" }
+      }
+    }
+  },
+  "workspaces": {
+    "settings": { "number_of_shards": 1, "number_of_replicas": 0 },
+    "mappings": {
+      "properties": {
+        "ownerId":     { "type": "keyword" },
+        "name":        { "type": "text", "analyzer": "standard", "fields": { "keyword": { "type": "keyword" } } },
+        "slug":        { "type": "keyword" },
+        "type":        { "type": "keyword" },
+        "description": { "type": "text", "analyzer": "standard" },
+        "isActive":    { "type": "boolean" },
+        "isVerified":  { "type": "boolean" },
+        "subscription":{ "type": "keyword" },
+        "createdAt":   { "type": "date" }
+      }
+    }
+  }
+}

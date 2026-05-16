@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client'
+// Import from the local generated client to avoid pnpm store resolution issues
+import { PrismaClient } from '../node_modules/.prisma/client/index.js'
 
 declare global {
   // eslint-disable-next-line no-var
@@ -22,7 +23,7 @@ if (process.env['NODE_ENV'] !== 'production') {
 }
 
 export { PrismaClient }
-export type { Prisma } from '@prisma/client'
+export type { Prisma } from '../node_modules/.prisma/client/index.js'
 
 // Re-export all Prisma types for convenience
 export type {
@@ -42,4 +43,4 @@ export type {
   Automation,
   Campaign,
   AnalyticsEvent,
-} from '@prisma/client'
+} from '../node_modules/.prisma/client/index.js'

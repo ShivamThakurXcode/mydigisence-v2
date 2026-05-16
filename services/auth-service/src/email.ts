@@ -7,9 +7,11 @@ const log = createLogger('auth-service:email')
 const transporter = nodemailer.createTransport({
   host: config.email.host,
   port: config.email.port,
+  secure: config.email.port === 465,
   auth: config.email.user
     ? { user: config.email.user, pass: config.email.pass }
     : undefined,
+  tls: { rejectUnauthorized: false },
 })
 
 export async function sendVerificationEmail(

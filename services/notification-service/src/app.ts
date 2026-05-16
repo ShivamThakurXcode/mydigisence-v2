@@ -1,0 +1,35 @@
+import Fastify from 'fastify'
+import cors from '@fastify/cors'
+import helmet from '@fastify/helmet'
+import rateLimit from '@fastify/rate-limit'
+import { createLogger } from '@mydigisence/logger'
+import { prisma } from '@mydigisence/database'
+import { isAppError } from '@mydigisence/utils'
+import { config } from './config.js'
+import { notificationRoutes } from './notification/notification.routes.js'
+
+const log = createLogger('notification-service')
+const app = Fastify({ logger: false, trustProxy: true })
+
+async function bootstrap() {
+  await app.register(helmet)
+  await app.register(cors, { origin: config.corsOrigins, credentials: true })
+  await app.register(rateLimit, { max: 300, timeWindow: '1 minute' })
+
+  app.setErrorHandler((err, _req, reply) => {
+    if (isAppError(err)) return reply.code(err.statusCode).send({ success: false, error: { code: err.code, message: err.message } })
+    log.error({ err }, 'unhandled error')
+    return reply.code(500).send({ success: false, error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } })
+  })
+
+  app.get('/health', async () => ({ status: 'ok', service: 'notification-service', timestamp: new Date().toISOString() }))
+  await app.register(notificationRoutes)
+
+  await prisma.$connect()
+  await app.listen({ port: config.port, host: '0.0.0.0' })
+  log.info(`Notification service running on port ${config.port}`)
+}
+
+bootstrap().catch((err) => { log.error({ err }, 'startup failed'); process.exit(1) })
+process.on('SIGTERM', async () => { await app.close(); await prisma.$disconnect(); process.exit(0) })
+process.on('SIGINT', async () => { await app.close(); await prisma.$disconnect(); process.exit(0) })

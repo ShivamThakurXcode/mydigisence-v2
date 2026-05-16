@@ -14,15 +14,17 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/cors": "^10.0.0",
+    "@fastify/helmet": "^13.0.0",
+    "@fastify/rate-limit": "^10.0.0",
     "@mydigisence/auth": "workspace:*",
     "@mydigisence/constants": "workspace:*",
     "@mydigisence/database": "workspace:*",
     "@mydigisence/logger": "workspace:*",
     "@mydigisence/validations": "workspace:*",
+    "dotenv": "^16.1.4",
     "fastify": "^5.0.0",
-    "@fastify/cors": "^10.0.0",
-    "@fastify/helmet": "^13.0.0",
-    "@fastify/rate-limit": "^10.0.0",
     "ioredis": "^5.4.0",
     "nodemailer": "^6.9.0",
     "zod": "^3.23.0"

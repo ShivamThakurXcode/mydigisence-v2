@@ -7,6 +7,16 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "lint": "eslint ."
+    "lint": "eslint src",
+    "type-check": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "zustand": "^5.0.0"
+  },
+  "devDependencies": {
+    "@mydigisence/configs": "workspace:*",
+    "@types/react": "^19.0.0",
+    "typescript": "^5.6.0"
   }
 }

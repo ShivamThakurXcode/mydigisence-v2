@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { DashboardUser, DashboardTopBarUser } from './dashboard-user.js'
 
 export const metadata: Metadata = {
   title: { template: '%s | Dashboard — MyDigiSence', default: 'Dashboard | MyDigiSence' },
@@ -59,23 +60,23 @@ export default function DashboardLayout({
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       {/* Sidebar */}
-      <aside className="hidden md:flex w-64 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
+      <aside className="hidden md:flex w-64 flex-col bg-card text-card-foreground border-r border-border">
         {/* Logo */}
-        <div className="h-16 flex items-center px-6 border-b border-sidebar-border">
-          <Link href="/" className="text-xl font-bold text-sidebar-foreground">
+        <div className="h-16 flex items-center px-6 border-b border-border">
+          <Link href="/" className="text-xl font-bold text-card-foreground">
             MyDigiSence
           </Link>
         </div>
 
         {/* Workspace name */}
-        <div className="px-4 py-3 border-b border-sidebar-border">
-          <div className="flex items-center gap-3 px-2 py-2 rounded-lg bg-sidebar-accent">
-            <div className="w-8 h-8 rounded-md bg-sidebar-primary flex items-center justify-center text-sidebar-primary-foreground text-sm font-bold uppercase">
+        <div className="px-4 py-3 border-b border-border">
+          <div className="flex items-center gap-3 px-2 py-2 rounded-lg bg-muted">
+            <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold uppercase">
               {workspaceSlug.charAt(0)}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">{workspaceSlug}</p>
-              <p className="text-xs text-sidebar-accent-foreground/70">Free plan</p>
+              <p className="text-xs text-accent-foreground/70">Free plan</p>
             </div>
           </div>
         </div>
@@ -86,7 +87,7 @@ export default function DashboardLayout({
             <Link
               key={item.href}
               href={`${basePath}${item.href}`}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-card-foreground/80 hover:bg-accent hover:text-accent-foreground transition-colors"
             >
               <SidebarIcon name={item.icon} />
               {item.label}
@@ -95,17 +96,7 @@ export default function DashboardLayout({
         </nav>
 
         {/* User */}
-        <div className="p-3 border-t border-sidebar-border">
-          <Link
-            href="/login"
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            Sign out
-          </Link>
-        </div>
+        <DashboardUser workspaceSlug={workspaceSlug} />
       </aside>
 
       {/* Main */}
@@ -119,16 +110,7 @@ export default function DashboardLayout({
               </svg>
             </button>
           </div>
-          <div className="flex items-center gap-3">
-            <Link href={`/dashboard/${workspaceSlug}/notifications`} className="p-2 rounded-md hover:bg-muted relative">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-            </Link>
-            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
-              U
-            </div>
-          </div>
+          <DashboardTopBarUser workspaceSlug={workspaceSlug} />
         </header>
 
         {/* Page content */}

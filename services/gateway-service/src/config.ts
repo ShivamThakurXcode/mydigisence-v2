@@ -11,6 +11,7 @@ export const config = {
     search: process.env['SEARCH_SERVICE_URL'] ?? 'http://localhost:4006',
     ai: process.env['AI_SERVICE_URL'] ?? 'http://localhost:4007',
     notification: process.env['NOTIFICATION_SERVICE_URL'] ?? 'http://localhost:4008',
+    business: process.env['BUSINESS_SERVICE_URL'] ?? 'http://localhost:4009',
     websocket: process.env['WEBSOCKET_SERVICE_URL'] ?? 'http://localhost:4010',
   },
   redis: {

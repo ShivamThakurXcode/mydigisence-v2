@@ -96,6 +96,14 @@ async function bootstrap() {
     http2: false,
   })
 
+  // Business profile routes
+  await app.register(httpProxy, {
+    upstream: config.services.business,
+    prefix: '/business',
+    rewritePrefix: '/business',
+    http2: false,
+  })
+
   // ─── Start ────────────────────────────────────────────────
   await app.listen({ port: config.port, host: '0.0.0.0' })
   log.info(`Gateway running on port ${config.port}`)
