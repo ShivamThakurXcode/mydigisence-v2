@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { ProfileRenderer } from '../../shared/profile/renderer.js'
+import { ProfileRenderer } from '../../shared/profile/renderer'
 
 interface ProfileData {
   id: string

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { authApi } from '../lib/api.js'
+import { authApi } from '../lib/api'
 
 interface SessionUser {
   id: string

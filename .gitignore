@@ -22,6 +22,19 @@ apps/**/.env.local
 # TypeScript
 *.tsbuildinfo
 
+# Compiled output sitting next to source (tsc artifacts inside src/)
+# These duplicate Next.js pages and cause "Duplicate page detected" errors
+apps/web-platform/src/**/*.js
+apps/web-platform/src/**/*.js.map
+apps/web-platform/src/**/*.d.ts
+apps/web-platform/src/**/*.d.ts.map
+apps/web-platform/next.config.js
+apps/web-platform/next.config.js.map
+apps/web-platform/middleware.js
+apps/web-platform/middleware.js.map
+apps/web-platform/tailwind.config.js
+apps/web-platform/tailwind.config.js.map
+
 # Logs
 *.log
 npm-debug.log*
